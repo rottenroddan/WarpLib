@@ -5,12 +5,14 @@
 #ifndef WARPLIB_MATRIX_HPP
 #define WARPLIB_MATRIX_HPP
 
+
 #include <concepts>
 #include <memory>
 #include <type_traits>
 
+#include <warp/shared/layout/MemoryLayout.hpp>
 #include <warp/host/alllocators/GenericHostResource.hpp>
-#include <warp/host/alllocators/Layout.hpp>
+#include "warp/shared/layout/GenereicRowMajorLayout.hpp"
 
 namespace warp  {
     /**
@@ -48,7 +50,7 @@ namespace warp  {
      * Constrains a type `T` to provide a compile-time memory layout policy.
      *
      * This concept requires a static `T::getMajor()` member returning a
-     * `layout::MemoryLayout` enum value that is not only type-correct, but
+     * `layout::MemoryMajor` enum value that is not only type-correct, but
      * also a *constant expression* usable in template instantiation.
      *
      * The use of `std::integral_constant<decltype(T::getMajor()), T::getMajor()>`
@@ -75,24 +77,37 @@ namespace warp  {
                 decltype(Layout::getMajor()),
                 Layout::getMajor()
         >;
-        {Layout::getMajor()} -> std::same_as<layout::MemoryLayout>;
+        {Layout::getMajor()} -> std::same_as<mem::MemoryLayout>;
         {Layout::resize(std::declval<size_t>(), // row
                         std::declval<size_t>(), // col
                         std::declval<size_t>(), // totalSize
                         std::declval<size_t&>(), // lvalue ref actualRow
                         std::declval<size_t&>(), // lvalue ref actualCol
                         std::declval<size_t&>()) // lvalue ref actualTotalSize
-            } -> std::same_as<void>;
+        } -> std::same_as<void>;
+        {Layout::index(std::declval<size_t>(), // row
+                        std::declval<size_t>(), // col
+                        std::declval<size_t>(), // totalSize
+                        std::declval<size_t>(), // lvalue ref actualRow
+                        std::declval<size_t>(), // lvalue ref actualCol
+                        std::declval<size_t>()) // lvalue ref actualTotalSize
+        } -> std::convertible_to<size_t>;
     };
 
+    /**
+     *
+     * @tparam T
+     * @tparam Resource
+     * @tparam Layout
+     */
     template<typename T,
             typename Resource = resource::GenericHostResource,
-            typename Layout = layout::GenericLayout>
+            typename Layout = mem::layout::GenericRowMajorLayout>
     requires ResourcePolicy<Resource, T> && LayoutPolicy<Layout, T>
     class Matrix {
     private:
         std::shared_ptr<T[]> _matrix;
-        size_t rows{}, cols{}, totalSize{}, actualRows{}, actualCols{}, actualTotalSize{};
+        size_t rows, cols, totalSize, actualRows, actualCols, actualTotalSize;
     public:
         Matrix(size_t rows, size_t cols) : rows(rows), cols(cols), totalSize(rows * cols) {
             Layout::resize(rows, cols, totalSize, actualRows, actualCols, actualTotalSize);
@@ -101,8 +116,12 @@ namespace warp  {
             _matrix = std::shared_ptr<T[]>(_raw, [=](T* _ptr){ Resource::template deallocate<T>(_ptr); });
         }
 
-        T get(size_t i, size_t j) requires Resource::cpu_accessible {
-                return _matrix[i];
+        T get(size_t i, size_t j) const requires Resource::cpu_accessible {
+            return _matrix[i];
+        }
+
+        T& at(size_t i, size_t j) requires Resource::cpu_accessible {
+            return _matrix[i];
         }
     };
 }
