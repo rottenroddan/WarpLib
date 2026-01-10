@@ -3,8 +3,7 @@ file(GLOB_RECURSE HOST_SOURCES
 )
 
 set(WARP_HOST WarpLibHost)
-add_library(${WARP_HOST} STATIC ${HOST_SOURCES}
-        ../tests/test.cpp)
+add_library(${WARP_HOST} STATIC ${HOST_SOURCES})
 
 target_include_directories(${WARP_HOST}
     PUBLIC ${CMAKE_SOURCE_DIR}/include
