@@ -105,14 +105,20 @@ namespace warp  {
             typename Layout = mem::layout::GenericRowMajorLayout>
     requires ResourcePolicy<Resource, T> && LayoutPolicy<Layout, T>
     class Matrix {
-    private:
         std::shared_ptr<T[]> _matrix;
-        size_t rows, cols, totalSize, actualRows, actualCols, actualTotalSize;
+        size_t rows, cols, totalSize, actualRows{}, actualCols{}, actualTotalSize{};
     public:
+        // types
+        using value_type = T;
+        using resource_type = Resource;
+        using layout_type = Layout;
+
+
         Matrix(size_t rows, size_t cols) : rows(rows), cols(cols), totalSize(rows * cols) {
             Layout::resize(rows, cols, totalSize, actualRows, actualCols, actualTotalSize);
+
             auto* _raw = Resource::template allocate<T>(actualTotalSize);
-            Resource::template zero(_raw, actualTotalSize);
+            Resource::template zero<T>(_raw, actualTotalSize);
             _matrix = std::shared_ptr<T[]>(_raw, [=](T* _ptr){ Resource::template deallocate<T>(_ptr); });
         }
 

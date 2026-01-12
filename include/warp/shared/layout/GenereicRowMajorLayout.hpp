@@ -6,7 +6,6 @@
 #define WARPLIB_GENEREICROWMAJORLAYOUT_HPP
 
 #include <warp/shared/cuda_attr_expandables.hpp>
-#include <warp/shared/layout/Indices.hpp>
 #include <warp/shared/layout/MemoryLayout.hpp>
 
 
@@ -22,9 +21,9 @@ namespace warp::mem::layout {
         }
 
         template<typename Index_T = size_t >
-        HOST_DEVICE static inline Index_T index(size_t i, size_t j,
-                                      size_t /*rows*/, size_t cols,
-                                      size_t /*actualRows*/, size_t /*actualCols*/) {
+        HOST_DEVICE static Index_T index(const size_t i, const size_t j,
+                                         const size_t /*rows*/, const size_t cols,
+                                         const size_t /*actualRows*/, const size_t /*actualCols*/) {
             return i * cols + j;
         }
     };

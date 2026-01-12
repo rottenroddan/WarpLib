@@ -7,6 +7,6 @@
 #pragma once
 namespace warp::kernels {
     __device__ void hello_world() {
-        printf("Hello World From CUDA!\n");
+        printf("Hello World From CUDA nerdos!\n");
     }
 }
