@@ -1,1 +1,2 @@
 add_subdirectory(test_build_library)
+add_subdirectory(another_directory)
