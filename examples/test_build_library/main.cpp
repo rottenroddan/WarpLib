@@ -6,6 +6,7 @@
 #include <warp/device/CudaKernels.h>
 
 #include <warp/host/Matrix.hpp>
+#include <warp/host/resources/CudaDeviceResource.hpp>
 
 template<class T>
 class A;
@@ -31,8 +32,21 @@ public:
     }
 };
 
+struct C {
+    int x {100};
+};
+
 
 int main() {
+    const C* const c = new C();
+
+    std::cout << c->x << std::endl;
+    std::cout << c->x
+    << std::endl;
+
+
+    delete c;
+
 
     A<int> a;
     B<int> b;
@@ -45,4 +59,6 @@ int main() {
     warp::device::test((float*)nullptr);
 
     warp::Matrix<int> mat(100,100);
+
+    warp::Matrix<int, warp::resource::CudaDeviceResource> dev(100, 100);
 }

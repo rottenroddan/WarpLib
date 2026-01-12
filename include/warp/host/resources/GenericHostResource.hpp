@@ -5,7 +5,7 @@
 #ifndef WARPLIB_GENERICALLOCATOR_HPP
 #define WARPLIB_GENERICALLOCATOR_HPP
 
-#include <warp/host/alllocators/MemorySpace.hpp>
+#include <warp/host/resources/MemorySpace.hpp>
 
 namespace warp::resource {
     class GenericHostResource {

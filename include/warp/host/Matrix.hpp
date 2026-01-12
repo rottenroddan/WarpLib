@@ -11,7 +11,7 @@
 #include <type_traits>
 
 #include <warp/shared/layout/MemoryLayout.hpp>
-#include <warp/host/alllocators/GenericHostResource.hpp>
+#include <warp/host/resources/GenericHostResource.hpp>
 #include "warp/shared/layout/GenereicRowMajorLayout.hpp"
 
 namespace warp  {

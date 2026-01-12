@@ -14,5 +14,8 @@ target_compile_features(${WARP_HOST} PUBLIC cxx_std_20)
 # Device code
 add_subdirectory(device)
 
+find_package(CUDAToolkit REQUIRED)
+
 # Link device library
-target_link_libraries(${WARP_HOST} PUBLIC WarpLibDevice)
+target_link_libraries(${WARP_HOST}
+        PUBLIC WarpLibDevice CUDA::cudart)
