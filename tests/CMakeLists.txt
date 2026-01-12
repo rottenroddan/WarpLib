@@ -4,7 +4,7 @@ add_executable(WarpLib_Tests
 
 target_link_libraries(WarpLib_Tests
         PRIVATE
-        WarpLib
+        WarpLibHost
         GTest::gtest
         GTest::gtest_main
 )
