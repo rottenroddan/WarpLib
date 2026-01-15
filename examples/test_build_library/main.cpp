@@ -8,6 +8,8 @@
 #include <warp/host/Matrix.hpp>
 #include <warp/host/resources/CudaDeviceResource.hpp>
 
+#include "warp/shared/layout/GenericLayout.hpp"
+
 template<class T>
 class A;
 
@@ -32,13 +34,14 @@ public:
     }
 };
 
+template<typename T = int>
 struct C {
     int x {100};
 };
 
 
 int main() {
-    const C* const c = new C();
+    const C<>* const c = new C<>();
 
     std::cout << c->x << std::endl;
     std::cout << c->x
@@ -58,7 +61,7 @@ int main() {
 
     warp::device::test((float*)nullptr);
 
-    warp::Matrix<int> mat(100,100);
+    warp::Matrix<int, warp::resource::GenericHostResource, warp::mem::layout::GenericLayout<>> mat(100,100);
 
     warp::Matrix<int, warp::resource::CudaDeviceResource> dev(100, 100);
 }

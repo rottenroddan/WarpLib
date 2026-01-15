@@ -12,7 +12,7 @@
 
 #include <warp/shared/layout/MemoryLayout.hpp>
 #include <warp/host/resources/GenericHostResource.hpp>
-#include "warp/shared/layout/GenereicRowMajorLayout.hpp"
+#include "warp/shared/layout/RowMajorLayout.hpp"
 
 namespace warp  {
     /**
@@ -70,14 +70,16 @@ namespace warp  {
      * eliminating any runtime layout dispatch.
      */
     template<typename Layout, typename T>
-    concept LayoutPolicy =
-    std::is_enum_v<decltype(Layout::getMajor())>
-    && requires {
-        typename std::integral_constant<
-                decltype(Layout::getMajor()),
-                Layout::getMajor()
-        >;
-        {Layout::getMajor()} -> std::same_as<mem::MemoryLayout>;
+    concept LayoutPolicy = requires
+        {
+            {Layout::is_tiled_layout } -> std::convertible_to<bool>;
+        }
+        && ((Layout::is_tiled_layout) && (requires {{Layout::tile_size} -> std::convertible_to<size_t>;})
+            ||
+            ((!Layout::is_tiled_layout) && !(requires {{Layout::tile_size} -> std::convertible_to<size_t>;}))
+            )
+        && requires {
+        {Layout::memory_major} -> std::convertible_to<const mem::MemoryLayout>;
         {Layout::resize(std::declval<size_t>(), // row
                         std::declval<size_t>(), // col
                         std::declval<size_t>(), // totalSize
@@ -102,11 +104,12 @@ namespace warp  {
      */
     template<typename T,
             typename Resource = resource::GenericHostResource,
-            typename Layout = mem::layout::GenericRowMajorLayout>
+            typename Layout = mem::layout::RowMajorLayout>
     requires ResourcePolicy<Resource, T> && LayoutPolicy<Layout, T>
     class Matrix {
         std::shared_ptr<T[]> _matrix;
         size_t rows, cols, totalSize, actualRows{}, actualCols{}, actualTotalSize{};
+
     public:
         // types
         using value_type = T;
@@ -123,11 +126,35 @@ namespace warp  {
         }
 
         T get(size_t i, size_t j) const requires Resource::cpu_accessible {
-            return _matrix[i];
+            return _matrix[layout_type::index(i, j, rows, cols, actualRows, actualCols)];
         }
 
         T& at(size_t i, size_t j) requires Resource::cpu_accessible {
-            return _matrix[i];
+            return _matrix[layout_type::index(i, j, rows, cols, actualRows, actualCols)];
+        }
+
+        [[nodiscard]] size_t getRows() const {
+            return rows;
+        }
+
+        [[nodiscard]] size_t getCols() const {
+            return cols;
+        }
+
+        [[nodiscard]] size_t getTotalSize() const {
+            return totalSize;
+        }
+
+        [[nodiscard]] size_t getActualRows() const {
+            return actualRows;
+        }
+
+        [[nodiscard]] size_t getActualCols() const {
+            return actualCols;
+        }
+
+        [[nodiscard]] size_t getActualTotalSize() const {
+            return actualTotalSize;
         }
     };
 }

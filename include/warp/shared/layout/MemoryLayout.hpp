@@ -5,6 +5,6 @@
 #ifndef WARPLIB_MEMORYLAYOUT_HPP
 #define WARPLIB_MEMORYLAYOUT_HPP
 
-namespace warp::mem { enum MemoryLayout {ROW_MAJOR, COL_MAJOR}; }
+namespace warp::mem { enum MemoryLayout {row_major, col_major}; }
 
 #endif //WARPLIB_MEMORYLAYOUT_HPP
