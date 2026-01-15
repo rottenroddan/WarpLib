@@ -5,8 +5,6 @@
 #ifndef WARPLIB_GENERICCUDARESOURCE_HPP
 #define WARPLIB_GENERICCUDARESOURCE_HPP
 
-#include <warp/host/resources/MemorySpace.hpp>
-
 #include <cuda_runtime.h>
 
 namespace warp::resource {
@@ -23,7 +21,7 @@ namespace warp::resource {
 
         template<class T>
         static void zero(T* const _dst, const size_t size) {
-            cudaMemset(static_cast<void *>(_dst), 0x0, size * sizeof(T));
+            cudaMemset(_dst, T{0}, size * sizeof(T));
         }
 
         template<class T>

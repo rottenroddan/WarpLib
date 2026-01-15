@@ -5,25 +5,23 @@
 #ifndef WARPLIB_GENERICALLOCATOR_HPP
 #define WARPLIB_GENERICALLOCATOR_HPP
 
-#include <warp/host/resources/MemorySpace.hpp>
-
 namespace warp::resource {
     class GenericHostResource {
     public:
         static constexpr bool cpu_accessible{true};
 
         template<class T>
-        static T* allocate(size_t size) {
+        static T* allocate(const size_t size) {
             return new T[size];
         }
 
         template<class T>
-        static void zero(T* _dst, size_t size) {
-            memset((void*)_dst, 0x0, size * sizeof(T));
+        static void zero(T* const _dst, const size_t size) {
+            memset(_dst, T{0}, size * sizeof(T));
         }
 
         template<class T>
-        static void deallocate(T* _ptr) {
+        static void deallocate(T* const _ptr) {
             delete[] _ptr;
         }
     };
