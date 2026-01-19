@@ -21,7 +21,7 @@ namespace warp::resource {
 
         template<class T>
         static void zero(T* const _dst, const size_t size) {
-            cudaMemset(_dst, T{0}, size * sizeof(T));
+            cudaMemset(_dst, 0x0, size * sizeof(T));
         }
 
         template<class T>

@@ -4,5 +4,5 @@
 
 #include "ValidationKernels.cuh"
 
-template bool validateArray(int32_t*, int32_t*, int);
-template bool validateArray(float*, float*, int);
+template bool warp::test_utils::validateArray(int32_t*, int32_t*, int);
+template bool warp::test_utils::validateArray<float>(float*, float*, int);

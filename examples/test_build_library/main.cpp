@@ -8,6 +8,7 @@
 #include <warp/host/Matrix.hpp>
 #include <warp/host/resources/CudaDeviceResource.hpp>
 
+#include "warp/host/resources/UnifiedMemoryResource.hpp"
 #include "warp/shared/layout/GenericLayout.hpp"
 
 template<class T>
@@ -41,27 +42,11 @@ struct C {
 
 
 int main() {
-    const C<>* const c = new C<>();
-
-    std::cout << c->x << std::endl;
-    std::cout << c->x
-    << std::endl;
-
-
-    delete c;
-
-
-    A<int> a;
-    B<int> b;
-
-    a.foo(b);
-
-    // host lib
-    warp::test();
-
-    warp::device::test((float*)nullptr);
-
-    warp::Matrix<int, warp::resource::GenericHostResource, warp::mem::layout::GenericLayout<>> mat(100,100);
-
-    warp::Matrix<int, warp::resource::CudaDeviceResource> dev(100, 100);
+    warp::Matrix<int, warp::resource::UnifiedMemoryResource, warp::mem::layout::GenericLayout<>> mat(10,10);
+    for (int i = 0; i < 10; ++i) {
+        for (int j = 0; j < 10; ++j) {
+            std::cout << mat.get(i,j) << "  ";
+        }
+        std::cout << std::endl;
+    }
 }

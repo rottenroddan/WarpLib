@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include <warp/host/resources/GenericHostResource.hpp>
 
-TEST(GenericHostAllocationTest, HandlesAllocation) {
+TEST(GenericHostResourceTestSuite, HandlesAllocation) {
     constexpr int size = 512;
     const auto _ptr = warp::resource::GenericHostResource::allocate<int32_t>(size);
     ASSERT_NE(_ptr, nullptr);
@@ -16,7 +16,7 @@ TEST(GenericHostAllocationTest, HandlesAllocation) {
     warp::resource::GenericHostResource::deallocate(_ptr);
 }
 
-TEST(GenericHostAllocationTest, HandlesZeroingData) {
+TEST(GenericHostResourceTestSuite, HandlesZeroingData) {
     constexpr int size = 512;
     const auto _ptr = warp::resource::GenericHostResource::allocate<int32_t>(size);
     ASSERT_NE(_ptr, nullptr);

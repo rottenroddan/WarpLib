@@ -1,7 +1,9 @@
 project(WarpLib_Device_Tests CUDA)
 add_executable(WarpLib_Device_Tests
-        TestCudaDeviceResource.cu
+        resource/TestCudaDeviceResource.cu
+        resource/TestUnifiedMemoryResource.cu
         Test_Utils/ValidationKernels.cu
+        Test_Utils/Common.cu
 )
 
 set_target_properties(WarpLib_Device_Tests PROPERTIES
