@@ -6,6 +6,10 @@ file(GLOB_RECURSE HOST_SOURCES
 set(WARP_HOST WarpLibHost)
 add_library(${WARP_HOST} STATIC ${HOST_SOURCES})
 
+if(WARPLIB_STATIC_ZERO_MEMORY_AFTER_FREE)
+    target_compile_definitions(${WARP_HOST} PUBLIC WARPLIB_ZERO_MEMORY)
+endif()
+
 target_include_directories(${WARP_HOST}
         PUBLIC ${CMAKE_SOURCE_DIR}/include
 )

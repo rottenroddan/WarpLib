@@ -40,7 +40,11 @@ namespace warp  {
     concept ResourcePolicy = requires {
         {Resource::template zero<T>(std::declval<T*>(), std::declval<size_t>())} -> std::same_as<void>;
         {Resource::template allocate<T>(size_t{}) } -> std::same_as<T*>;
-        {Resource::template deallocate<T>(std::declval<T*>())};
+        #ifndef WARPLIB_ZERO_MEMORY
+            {Resource::template deallocate<T>(std::declval<T*>())};
+        #else
+            {Resource::template deallocate<T>(std::declval<T*>(), std::declval<size_t>())};
+        #endif
         {Resource::cpu_accessible } -> std::convertible_to<bool>;
     };
 
@@ -122,7 +126,13 @@ namespace warp  {
 
             auto* _raw = Resource::template allocate<T>(actualTotalSize);
             Resource::template zero<T>(_raw, actualTotalSize);
-            _matrix = std::shared_ptr<T[]>(_raw, [=](T* _ptr){ Resource::template deallocate<T>(_ptr); });
+            _matrix = std::shared_ptr<T[]>(_raw, [this](T* _ptr) {
+#ifndef WARPLIB_ZERO_MEMORY
+                Resource::template deallocate<T>(_ptr);
+#else
+                Resource::template deallocate<T>(_ptr, actualTotalSize);
+#endif
+            });
         }
 
         T get(size_t i, size_t j) const requires Resource::cpu_accessible {

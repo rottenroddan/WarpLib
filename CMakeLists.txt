@@ -11,6 +11,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/$<CONFIG>)
 
 # Fetch GTest
 option(WARPLIB_BUILD_TESTS "Build WarpLib tests" ${PROJECT_IS_TOP_LEVEL})
+option(WARPLIB_STATIC_ZERO_MEMORY_AFTER_FREE "Build Static WarpLib with default behavior of zeroing memory after freeing" ${PROJECT_IS_TOP_LEVEL})
 include(FetchContent)
 if(WARPLIB_BUILD_TESTS)
     FetchContent_Declare(

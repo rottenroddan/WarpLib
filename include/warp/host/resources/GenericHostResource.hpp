@@ -20,10 +20,19 @@ namespace warp::resource {
             memset(_dst, T{0}, size * sizeof(T));
         }
 
+#ifndef WARPLIB_ZERO_MEMORY
         template<class T>
         static void deallocate(T* const _ptr) {
             delete[] _ptr;
         }
+#else
+        template<class T>
+        static void deallocate(T* const _ptr, const size_t size) {
+            memset(_ptr, 0x0, size * sizeof(T));
+            delete[] _ptr;
+        }
+#endif
+
     };
 }
 

@@ -1,5 +1,6 @@
 add_executable(WarpLib_Host_Tests
         resources/TestGenericHostResource.cpp
+        resources/TestHostCacheAlignedResource.cpp
 )
 
 target_link_libraries(WarpLib_Host_Tests

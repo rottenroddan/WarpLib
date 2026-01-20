@@ -8,15 +8,13 @@
 #include <warp/shared/cuda_attr_expandables.hpp>
 #include <warp/shared/layout/MemoryLayout.hpp>
 
-
 namespace warp::mem::layout {
-
     class RowMajorLayout {
     public:
         static constexpr bool is_tiled_layout{false};
         static constexpr MemoryLayout memory_major{row_major};
 
-        static constexpr void resize(size_t rows, size_t cols, size_t totalSize, size_t& actualRows, size_t& actualCols, size_t& actualTotalSize ) {
+        static constexpr void resize(const size_t rows, const size_t cols, const size_t totalSize, size_t& actualRows, size_t& actualCols, size_t& actualTotalSize ) {
             actualRows = rows;
             actualCols = cols;
             actualTotalSize = totalSize;
@@ -29,7 +27,6 @@ namespace warp::mem::layout {
             return i * cols + j;
         }
     };
-
 }
 
 #endif //WARPLIB_GENEREICROWMAJORLAYOUT_HPP

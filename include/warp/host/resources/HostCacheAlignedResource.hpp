@@ -9,13 +9,13 @@
 #include <new>
 
 namespace warp::resource {
-    class GenericHostResource {
+    class HostCacheAlignedResource {
     public:
         static constexpr bool cpu_accessible{true};
 
         template<class T>
         static T* allocate(const size_t size) {
-            return _aligned_malloc(sizeof(T) * size, std::hardware_destructive_interference_size);
+            return static_cast<T*>(_aligned_malloc(sizeof(T) * size, std::hardware_destructive_interference_size));
         }
 
         template<class T>
@@ -23,11 +23,22 @@ namespace warp::resource {
             memset(_dst, T{0}, size * sizeof(T));
         }
 
+
+
+#ifndef WARPLIB_ZERO_MEMORY
         template<class T>
         static void deallocate(T* const _ptr) {
             _aligned_free(_ptr);
         }
+#else
+        template<class T>
+        static void deallocate(T* const _ptr, const size_t size) {
+            memset(_ptr, 0x0, size * sizeof(T));
+            _aligned_free(_ptr);
+        }
+#endif
     };
+
 }
 
 
