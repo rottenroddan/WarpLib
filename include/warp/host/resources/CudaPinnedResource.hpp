@@ -1,19 +1,20 @@
 //
-// Created by steve on 1/16/2026.
+// Created by steve on 1/20/2026.
 //
 
-#ifndef WARPLIB_UNIFIEDMEMORYRESOURCE_HPP
-#define WARPLIB_UNIFIEDMEMORYRESOURCE_HPP
+#ifndef WARPLIB_PINNEDMEMORYRESOURCE_HPP
+#define WARPLIB_PINNEDMEMORYRESOURCE_HPP
+#include "../../../../../../../../Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.1/include/cuda_runtime.h"
 
 namespace warp::resource {
-    class UnifiedMemoryResource {
+    class CudaPinnedResource {
     public:
         static constexpr bool cpu_accessible{true};
 
         template<class T>
         static T* allocate(const size_t size) {
             T* _ptr = nullptr;
-            cudaMallocManaged(&_ptr, size * sizeof(T));
+            cudaMallocHost(&_ptr, size * sizeof(T));
             return _ptr;
         }
 
@@ -25,17 +26,16 @@ namespace warp::resource {
 #ifndef WARPLIB_ZERO_MEMORY
         template<class T>
         static void deallocate(T* const _ptr) {
-            cudaFree(static_cast<void *>(_ptr));
+            cudaFreeHost(static_cast<void *>(_ptr));
         }
-
 #else
         template<class T>
         static void deallocate(T* const _ptr, const size_t size) {
             cudaMemset(static_cast<void *>(_ptr), 0x0, size * sizeof(T));
-            cudaFree(static_cast<void *>(_ptr));
+            cudaFreeHost(static_cast<void *>(_ptr));
         }
 #endif
     };
 }
 
-#endif //WARPLIB_UNIFIEDMEMORYRESOURCE_HPP
+#endif //WARPLIB_PINNEDMEMORYRESOURCE_HPP

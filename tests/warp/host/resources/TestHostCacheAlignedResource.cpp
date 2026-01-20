@@ -17,7 +17,11 @@ TEST(HostCacheAlignedResourceTestSuite, HandlesAllocation) {
         _ptr[i] = i;
         ASSERT_EQ(_ptr[i], i);
     }
+#ifndef WARPLIB_ZERO_MEMORY
     warp::resource::HostCacheAlignedResource::deallocate(_ptr);
+#else
+    warp::resource::HostCacheAlignedResource::deallocate(_ptr, size);
+#endif
 }
 
 TEST(HostCacheAlignedResourceTestSuite, HandlesZeroingData) {
@@ -31,5 +35,9 @@ TEST(HostCacheAlignedResourceTestSuite, HandlesZeroingData) {
     for (uint32_t i{}; i < size; i++) {
         ASSERT_EQ(_ptr[i], 0);
     }
+#ifndef WARPLIB_ZERO_MEMORY
     warp::resource::HostCacheAlignedResource::deallocate(_ptr);
+#else
+    warp::resource::HostCacheAlignedResource::deallocate(_ptr, size);
+#endif
 }

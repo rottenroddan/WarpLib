@@ -78,9 +78,9 @@ namespace warp  {
         {
             {Layout::is_tiled_layout } -> std::convertible_to<bool>;
         }
-        && ((Layout::is_tiled_layout) && (requires {{Layout::tile_size} -> std::convertible_to<size_t>;})
+        && (Layout::is_tiled_layout && requires {{Layout::tile_size} -> std::convertible_to<size_t>;}
             ||
-            ((!Layout::is_tiled_layout) && !(requires {{Layout::tile_size} -> std::convertible_to<size_t>;}))
+            (!Layout::is_tiled_layout && !requires {{Layout::tile_size} -> std::convertible_to<size_t>;})
             )
         && requires {
         {Layout::memory_major} -> std::convertible_to<const mem::MemoryLayout>;

@@ -13,7 +13,11 @@ TEST(GenericHostResourceTestSuite, HandlesAllocation) {
         _ptr[i] = i;
         ASSERT_EQ(_ptr[i], i);
     }
+#ifndef WARPLIB_ZERO_MEMORY
     warp::resource::GenericHostResource::deallocate(_ptr);
+#else
+    warp::resource::GenericHostResource::deallocate(_ptr, size);
+#endif
 }
 
 TEST(GenericHostResourceTestSuite, HandlesZeroingData) {
@@ -27,5 +31,9 @@ TEST(GenericHostResourceTestSuite, HandlesZeroingData) {
     for (uint32_t i{}; i < size; i++) {
         ASSERT_EQ(_ptr[i], 0);
     }
+#ifndef WARPLIB_ZERO_MEMORY
     warp::resource::GenericHostResource::deallocate(_ptr);
+#else
+    warp::resource::GenericHostResource::deallocate(_ptr, size);
+#endif
 }

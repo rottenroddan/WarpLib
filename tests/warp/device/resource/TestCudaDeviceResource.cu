@@ -26,8 +26,13 @@ TEST(CudaDeviceAllocationTestSuite, HandlesAllocation) {
         _hostPtr[i] = i;
         ASSERT_EQ(_hostPtr[i], i);
     }
+#ifndef WARPLIB_ZERO_MEMORY
     warp::resource::CudaDeviceResource::deallocate(_devicePtr);
     warp::resource::GenericHostResource::deallocate(_hostPtr);
+#else
+    warp::resource::CudaDeviceResource::deallocate(_devicePtr, size);
+    warp::resource::GenericHostResource::deallocate(_hostPtr, size);
+#endif
 }
 
 TEST(CudaDeviceAllocationTestSuite, HandlesZeroingData) {
@@ -43,7 +48,15 @@ TEST(CudaDeviceAllocationTestSuite, HandlesZeroingData) {
     warp::resource::CudaDeviceResource::zero(d_ptr, size);
     ASSERT_TRUE(warp::test_utils::validateArray<int32_t>(truth_device, d_ptr, size));
 
+
+
+#ifndef WARPLIB_ZERO_MEMORY
     warp::resource::CudaDeviceResource::deallocate(d_ptr);
     warp::resource::CudaDeviceResource::deallocate(truth_device);
     warp::resource::GenericHostResource::deallocate(truth_host);
+#else
+    warp::resource::CudaDeviceResource::deallocate(d_ptr, size);
+    warp::resource::CudaDeviceResource::deallocate(truth_device, size);
+    warp::resource::GenericHostResource::deallocate(truth_host, size);
+#endif
 }

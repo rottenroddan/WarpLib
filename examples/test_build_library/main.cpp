@@ -8,7 +8,7 @@
 #include <warp/host/Matrix.hpp>
 #include <warp/host/resources/CudaDeviceResource.hpp>
 
-#include "warp/host/resources/UnifiedMemoryResource.hpp"
+#include "warp/host/resources/CudaManagedResource.hpp"
 #include "warp/shared/layout/GenericLayout.hpp"
 
 template<class T>
@@ -42,7 +42,7 @@ struct C {
 
 
 int main() {
-    warp::Matrix<int, warp::resource::UnifiedMemoryResource, warp::mem::layout::GenericLayout<>> mat(10,10);
+    warp::Matrix<int, warp::resource::CudaManagedResource, warp::mem::layout::GenericLayout<>> mat(10,10);
     for (int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
             std::cout << mat.get(i,j) << "  ";

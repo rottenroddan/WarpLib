@@ -8,7 +8,7 @@
 
 #include <gtest/gtest.h>
 #include <cuda_runtime.h>
-#include <warp/host/resources/UnifiedMemoryResource.hpp>
+#include <warp/host/resources/CudaManagedResource.hpp>
 #include "../Test_Utils/ValidationKernels.cuh"
 #include "../Test_Utils/Common.cuh"
 #include "warp/host/resources/CudaDeviceResource.hpp"
@@ -18,7 +18,7 @@
 
 TEST(UnifiedMemoryResourceTestSuite, HandlesAllocation) {
     constexpr int size = 512;
-    const auto _unifiedPtr = warp::resource::UnifiedMemoryResource::allocate<int32_t>(size);
+    const auto _unifiedPtr = warp::resource::CudaManagedResource::allocate<int32_t>(size);
     ASSERT_NE(_unifiedPtr, nullptr);
 
     dim3 threadBlock(256);
@@ -30,12 +30,16 @@ TEST(UnifiedMemoryResourceTestSuite, HandlesAllocation) {
         _unifiedPtr[i] = i;
         ASSERT_EQ(_unifiedPtr[i], i);
     }
-    warp::resource::UnifiedMemoryResource::deallocate(_unifiedPtr);
+#ifndef WARPLIB_ZERO_MEMORY
+    warp::resource::CudaManagedResource::deallocate(_unifiedPtr);
+#else
+    warp::resource::CudaManagedResource::deallocate(_unifiedPtr, size);
+#endif
 }
 
 TEST(UnifiedMemoryResourceTestSuite, HandlesZeroingData) {
     constexpr int size = 512;
-    const auto u_ptr = warp::resource::UnifiedMemoryResource::allocate<int32_t>(size);
+    const auto u_ptr = warp::resource::CudaManagedResource::allocate<int32_t>(size);
     const auto truth_host = warp::resource::GenericHostResource::allocate<int32_t>(size);
     const auto truth_device = warp::resource::CudaDeviceResource::allocate<int32_t>(size);
     memset(truth_host, 0x0, size * sizeof(int32_t));
@@ -43,10 +47,16 @@ TEST(UnifiedMemoryResourceTestSuite, HandlesZeroingData) {
     cudaMemcpy(truth_device, truth_host, size * sizeof(int32_t), cudaMemcpyHostToDevice);
 
     // test
-    warp::resource::UnifiedMemoryResource::zero(u_ptr, size);
+    warp::resource::CudaManagedResource::zero(u_ptr, size);
     ASSERT_TRUE(warp::test_utils::validateArray<int32_t>(truth_device, u_ptr, size));
 
-    warp::resource::UnifiedMemoryResource::deallocate(u_ptr);
-    warp::resource::CudaDeviceResource::deallocate(truth_device);
+#ifndef WARPLIB_ZERO_MEMORY
+    warp::resource::CudaManagedResource::deallocate(u_ptr);
     warp::resource::GenericHostResource::deallocate(truth_host);
+    warp::resource::CudaDeviceResource::deallocate(truth_device);
+#else
+    warp::resource::CudaManagedResource::deallocate(u_ptr, size);
+    warp::resource::GenericHostResource::deallocate(truth_host, size);
+    warp::resource::CudaDeviceResource::deallocate(truth_device, size);
+#endif
 }
