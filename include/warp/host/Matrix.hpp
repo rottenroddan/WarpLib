@@ -135,6 +135,10 @@ namespace warp  {
             });
         }
 
+        T* getRaw() const {
+            return _matrix.get();
+        }
+
         T get(size_t i, size_t j) const requires Resource::cpu_accessible {
             return _matrix[layout_type::index(i, j, rows, cols, actualRows, actualCols)];
         }
