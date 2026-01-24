@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 using namespace warp::mem::layout;
 
-TEST(TileRowMajorLayout, VerifyTileEdgesWork_3x3_3x4_4x3_4x4)
+TEST(TileRowMajorLayoutTestSuite, VerifyTileEdgesWork_3x3_3x4_4x3_4x4)
 {
     constexpr size_t rows = 9;
     constexpr size_t cols = 8;

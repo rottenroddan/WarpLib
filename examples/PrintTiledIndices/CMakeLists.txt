@@ -1,0 +1,5 @@
+add_executable(PrintTiledIndices main.cpp)
+target_link_libraries(PrintTiledIndices PRIVATE WarpLibHost WarpLibDevice)
+add_dependencies(PrintTiledIndices WarpLibDevice)
+
+append_to_device_target(PrintTiledIndices)
