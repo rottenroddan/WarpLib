@@ -7,3 +7,4 @@ add_dependencies(TestExample WarpLibDevice)
 #set_property(GLOBAL PROPERTY WarpLibDeviceTargets "${DLL_EXAMPLE_TARGETS}")
 
 append_to_device_target(TestExample)
+copy_warplib_device(TestExample)

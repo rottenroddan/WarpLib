@@ -6,8 +6,8 @@ set(CMAKE_CUDA_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Output folders
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/$<CONFIG>)
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # Fetch GTest
 option(WARPLIB_BUILD_TESTS "Build WarpLib tests" ${PROJECT_IS_TOP_LEVEL})
@@ -34,11 +34,20 @@ function(append_to_device_target target)
     set_property(GLOBAL PROPERTY WarpLibDeviceTargets "${DLL_WARP_TARGETS}")
 endfunction()
 
+function(copy_warplib_device exe)
+    add_custom_command(TARGET ${exe} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:WarpLibDevice>
+            $<TARGET_FILE_DIR:${exe}>
+            COMMENT "Copying WarpLibDevice.dll next to ${exe}"
+    )
+endfunction()
+
 
 # Subdirectories
-add_subdirectory(src)
 add_subdirectory(examples)
 if(WARPLIB_BUILD_TESTS)
     add_subdirectory(tests)
     enable_testing()
 endif()
+add_subdirectory(src)
