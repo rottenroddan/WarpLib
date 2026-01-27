@@ -7,7 +7,7 @@
 
 TEST(GenericHostResourceTestSuite, HandlesAllocation) {
     constexpr int size = 512;
-    const auto _ptr = warp::resource::GenericHostResource::allocate<int32_t>(size);
+    const auto _ptr = warp::mem::resource::GenericHostResource::allocate<int32_t>(size);
     ASSERT_NE(_ptr, nullptr);
     for (int32_t i = 0; i < size; ++i) {
         _ptr[i] = i;
@@ -16,24 +16,24 @@ TEST(GenericHostResourceTestSuite, HandlesAllocation) {
 #ifndef WARPLIB_ZERO_MEMORY
     warp::resource::GenericHostResource::deallocate(_ptr);
 #else
-    warp::resource::GenericHostResource::deallocate(_ptr, size);
+    warp::mem::resource::GenericHostResource::deallocate(_ptr, size);
 #endif
 }
 
 TEST(GenericHostResourceTestSuite, HandlesZeroingData) {
     constexpr int size = 512;
-    const auto _ptr = warp::resource::GenericHostResource::allocate<int32_t>(size);
+    const auto _ptr = warp::mem::resource::GenericHostResource::allocate<int32_t>(size);
     ASSERT_NE(_ptr, nullptr);
     for (int32_t i{}; i < size; i++) {
         _ptr[i] = i;
     }
-    warp::resource::GenericHostResource::zero(_ptr, size);
+    warp::mem::resource::GenericHostResource::zero(_ptr, size);
     for (uint32_t i{}; i < size; i++) {
         ASSERT_EQ(_ptr[i], 0);
     }
 #ifndef WARPLIB_ZERO_MEMORY
     warp::resource::GenericHostResource::deallocate(_ptr);
 #else
-    warp::resource::GenericHostResource::deallocate(_ptr, size);
+    warp::mem::resource::GenericHostResource::deallocate(_ptr, size);
 #endif
 }

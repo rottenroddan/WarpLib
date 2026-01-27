@@ -44,7 +44,7 @@ struct C {
 int main() {
     warp::test();
 
-    warp::Matrix<int, warp::resource::CudaManagedResource, warp::mem::layout::GenericLayout<>> mat(10,10);
+    warp::Matrix<int, warp::mem::resource::CudaManagedResource, warp::mem::layout::GenericLayout<>> mat(10,10);
     for (int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
             std::cout << mat.get(i,j) << "  ";

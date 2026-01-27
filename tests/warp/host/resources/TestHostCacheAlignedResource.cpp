@@ -9,10 +9,9 @@
 
 TEST(HostCacheAlignedResourceTestSuite, HandlesAllocation) {
     constexpr int size = 512;
-    const auto _ptr = warp::resource::HostCacheAlignedResource::allocate<int32_t>(size);
+    const auto _ptr = warp::mem::resource::HostCacheAlignedResource::allocate<int32_t>(size);
     ASSERT_NE(_ptr, nullptr);
     ASSERT_TRUE(reinterpret_cast<uint64_t>(_ptr) % std::hardware_destructive_interference_size == 0);
-    std::cout << reinterpret_cast<uint64_t>(_ptr) << std::endl;
     for (int32_t i = 0; i < size; ++i) {
         _ptr[i] = i;
         ASSERT_EQ(_ptr[i], i);
@@ -20,24 +19,24 @@ TEST(HostCacheAlignedResourceTestSuite, HandlesAllocation) {
 #ifndef WARPLIB_ZERO_MEMORY
     warp::resource::HostCacheAlignedResource::deallocate(_ptr);
 #else
-    warp::resource::HostCacheAlignedResource::deallocate(_ptr, size);
+    warp::mem::resource::HostCacheAlignedResource::deallocate(_ptr, size);
 #endif
 }
 
 TEST(HostCacheAlignedResourceTestSuite, HandlesZeroingData) {
     constexpr int size = 512;
-    const auto _ptr = warp::resource::HostCacheAlignedResource::allocate<int32_t>(size);
+    const auto _ptr = warp::mem::resource::HostCacheAlignedResource::allocate<int32_t>(size);
     ASSERT_NE(_ptr, nullptr);
     for (int32_t i{}; i < size; i++) {
         _ptr[i] = i;
     }
-    warp::resource::HostCacheAlignedResource::zero(_ptr, size);
+    warp::mem::resource::HostCacheAlignedResource::zero(_ptr, size);
     for (uint32_t i{}; i < size; i++) {
         ASSERT_EQ(_ptr[i], 0);
     }
 #ifndef WARPLIB_ZERO_MEMORY
     warp::resource::HostCacheAlignedResource::deallocate(_ptr);
 #else
-    warp::resource::HostCacheAlignedResource::deallocate(_ptr, size);
+    warp::mem::resource::HostCacheAlignedResource::deallocate(_ptr, size);
 #endif
 }

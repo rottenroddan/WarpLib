@@ -5,10 +5,11 @@
 #ifndef WARPLIB_HOSTCACHEALIGNEDRESOURCE_HPP
 #define WARPLIB_HOSTCACHEALIGNEDRESOURCE_HPP
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <new>
+#include <Windows.h>
 
-namespace warp::resource {
+namespace warp::mem::resource {
     class HostCacheAlignedResource {
     public:
         static constexpr bool cpu_accessible{true};
@@ -23,8 +24,6 @@ namespace warp::resource {
             memset(_dst, T{0}, size * sizeof(T));
         }
 
-
-
 #ifndef WARPLIB_ZERO_MEMORY
         template<class T>
         static void deallocate(T* const _ptr) {
@@ -33,7 +32,9 @@ namespace warp::resource {
 #else
         template<class T>
         static void deallocate(T* const _ptr, const size_t size) {
-            memset(_ptr, 0x0, size * sizeof(T));
+#ifdef WIN32
+            SecureZeroMemory(_ptr, size * sizeof(T));
+#endif
             _aligned_free(_ptr);
         }
 #endif

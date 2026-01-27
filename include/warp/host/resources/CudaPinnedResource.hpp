@@ -4,9 +4,9 @@
 
 #ifndef WARPLIB_PINNEDMEMORYRESOURCE_HPP
 #define WARPLIB_PINNEDMEMORYRESOURCE_HPP
-#include "../../../../../../../../Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.1/include/cuda_runtime.h"
+#include <cuda_runtime.h>
 
-namespace warp::resource {
+namespace warp::mem::resource {
     class CudaPinnedResource {
     public:
         static constexpr bool cpu_accessible{true};

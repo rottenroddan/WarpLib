@@ -28,13 +28,13 @@ void printMat(const T& mat ) {
 }
 
 int main() {
-    const warp::Matrix<int, warp::resource::GenericHostResource, warp::mem::layout::TileRowMajorLayout<tile_size>> rowMat(16,16);
+    const warp::Matrix<int, warp::mem::resource::GenericHostResource, warp::mem::layout::TileRowMajorLayout<tile_size>> rowMat(16,16);
     int* raw = rowMat.getRaw();
     for (size_t ii = 0; ii < rowMat.getActualRows()*rowMat.getActualCols(); ++ii) {
         raw[ii] = static_cast<int>(ii);
     }
 
-    const warp::Matrix<int, warp::resource::GenericHostResource, warp::mem::layout::TileColMajorLayout<tile_size>> colMat(16,16);
+    const warp::Matrix<int, warp::mem::resource::GenericHostResource, warp::mem::layout::TileColMajorLayout<tile_size>> colMat(16,16);
     raw = colMat.getRaw();
     for (size_t ii = 0; ii < colMat.getActualRows()*colMat.getActualCols(); ++ii) {
         raw[ii] = static_cast<int>(ii);

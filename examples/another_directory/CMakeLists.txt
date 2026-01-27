@@ -1,5 +1,2 @@
 add_executable(TestExample2 main.cpp)
 target_link_libraries(TestExample2 PRIVATE WarpLibHost WarpLibDevice)
-add_dependencies(TestExample2 WarpLibDevice)
-
-append_to_device_target(TestExample2)

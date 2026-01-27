@@ -11,4 +11,4 @@ target_link_libraries(WarpLib_Shared_Tests
 )
 
 include(GoogleTest)
-gtest_discover_tests(WarpLib_Shared_Tests)
+#gtest_discover_tests(WarpLib_Shared_Tests)

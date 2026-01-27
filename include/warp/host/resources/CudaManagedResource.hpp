@@ -5,7 +5,9 @@
 #ifndef WARPLIB_UNIFIEDMEMORYRESOURCE_HPP
 #define WARPLIB_UNIFIEDMEMORYRESOURCE_HPP
 
-namespace warp::resource {
+#include <cuda_runtime.h>
+
+namespace warp::mem::resource {
     class CudaManagedResource {
     public:
         static constexpr bool cpu_accessible{true};

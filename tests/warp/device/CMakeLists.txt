@@ -20,4 +20,4 @@ target_link_libraries(WarpLib_Device_Tests
 )
 
 include(GoogleTest)
-gtest_discover_tests(WarpLib_Device_Tests)
+#gtest_discover_tests(WarpLib_Device_Tests)

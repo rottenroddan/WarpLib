@@ -28,26 +28,28 @@ if(NOT DLL_WARP_TARGETS)
     set_property(GLOBAL PROPERTY WarpLibDeviceTargets "")
 endif()
 
-function(append_to_device_target target)
-    get_property(DLL_WARP_TARGETS GLOBAL PROPERTY WarpLibDeviceTargets)
-    list(APPEND DLL_WARP_TARGETS ${target})
-    set_property(GLOBAL PROPERTY WarpLibDeviceTargets "${DLL_WARP_TARGETS}")
-endfunction()
-
-function(copy_warplib_device exe)
-    add_custom_command(TARGET ${exe} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_FILE:WarpLibDevice>
-            $<TARGET_FILE_DIR:${exe}>
-            COMMENT "Copying WarpLibDevice.dll next to ${exe}"
-    )
-endfunction()
+#function(append_to_device_target target)
+#    get_property(DLL_WARP_TARGETS GLOBAL PROPERTY WarpLibDeviceTargets)
+#    list(APPEND DLL_WARP_TARGETS ${target})
+#    set_property(GLOBAL PROPERTY WarpLibDeviceTargets "${DLL_WARP_TARGETS}")
+#endfunction()
+#
+#function(copy_warplib_device exe)
+#    add_custom_command(TARGET ${exe} POST_BUILD
+#            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#            $<TARGET_FILE:WarpLibDevice>
+#            $<TARGET_FILE_DIR:${exe}>
+#            COMMENT "Copying WarpLibDevice.dll next to ${exe}"
+#    )
+#endfunction()
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(WarpLibHelpers.cmake)
 
 
 # Subdirectories
+add_subdirectory(src)
 add_subdirectory(examples)
 if(WARPLIB_BUILD_TESTS)
     add_subdirectory(tests)
     enable_testing()
 endif()
-add_subdirectory(src)

@@ -5,7 +5,9 @@
 #ifndef WARPLIB_GENERICALLOCATOR_HPP
 #define WARPLIB_GENERICALLOCATOR_HPP
 
-namespace warp::resource {
+#include <Windows.h>
+
+namespace warp::mem::resource {
     class GenericHostResource {
     public:
         static constexpr bool cpu_accessible{true};
@@ -28,7 +30,9 @@ namespace warp::resource {
 #else
         template<class T>
         static void deallocate(T* const _ptr, const size_t size) {
-            memset(_ptr, 0x0, size * sizeof(T));
+#ifdef WIN32
+            SecureZeroMemory(_ptr, size * sizeof(T));
+#endif
             delete[] _ptr;
         }
 #endif

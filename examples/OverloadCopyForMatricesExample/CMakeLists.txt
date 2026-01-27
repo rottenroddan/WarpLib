@@ -1,0 +1,2 @@
+add_executable(OverloadCopyForMatricesExample OverloadCopyForMatricesExample.cpp)
+target_link_libraries(OverloadCopyForMatricesExample PRIVATE WarpLibHost WarpLibDevice)

@@ -7,7 +7,7 @@
 
 #include <cuda_runtime.h>
 
-namespace warp::resource {
+namespace warp::mem::resource {
     class CudaDeviceResource {
     public:
         static constexpr bool cpu_accessible{false};
