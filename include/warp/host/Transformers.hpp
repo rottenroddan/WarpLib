@@ -15,7 +15,7 @@
 
 #include <warp/device/Common.cuh>
 #include <warp/device/CudaKernels.h>
-#include <warp/device/DeviceTransformers.cuh>
+#include <warp/device/device_transformers.cuh>
 
 namespace warp::transformers {
     /**
@@ -131,7 +131,8 @@ namespace warp::transformers {
         DstMatrix::resource_type::cpu_accessible && (!SrcMatrix::resource_type::cpu_accessible) // device->host
     void copy(DstMatrix& dst, const SrcMatrix& src, detail::internal::priority_1) {
         assert((common::isExactSameDimensions<DstMatrix, SrcMatrix>(dst, src)));
-        kernels::launchCastOnKernelFromAToB(dst.getRaw(), src.getRaw(), dst.getActualTotalSize());
+        bool isNotSameMemoryRegion = (static_cast<void*>(dst.getRaw()) != static_cast<void*>(src.getRaw()));
+        kernels::launchCastDataOnCudaKernel(dst.getRaw(), src.getRaw(), dst.getActualTotalSize(), isNotSameMemoryRegion);
     }
 }
 

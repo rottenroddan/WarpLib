@@ -1,9 +1,18 @@
 set(WARP_DEVICE_LIB WarpLibDevice)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CUDA_STANDARD 20)
+set(CMAKE_CUDA_ARCHITECTURES 86)
 
-file(GLOB DEVICE_SOURCES "*.cu")
+# # # # # # # # # # # #
+# Static Library for DLL to build off of
+# # # # # # # # # # # #
+add_library(WarpLibDevice_Static STATIC )
 
-# Build DLL
-add_library(${WARP_DEVICE_LIB} SHARED ${DEVICE_SOURCES})
+
+# # # # # # # # # # # #
+# Shared(DLL) Library
+# # # # # # # # # # # #
+add_library(${WARP_DEVICE_LIB} SHARED CudaKernels.cu device_transformers.cu)
 
 target_include_directories(${WARP_DEVICE_LIB}
         PUBLIC
