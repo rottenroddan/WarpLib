@@ -6,8 +6,12 @@
 #define WARPLIB_TRANSFORMERKERNELS_CUH
 
 #include <cuda_runtime.h>
+#include <iostream>
+#include <ostream>
+
 #include <warp/device/device_api.hpp>
 #include <warp/shared/cuda_error_status.hpp>
+#include <warp/shared/float_types.hpp>
 
 #define WARP_CUDA_DEFAULT_THREAD_COUNT 256
 

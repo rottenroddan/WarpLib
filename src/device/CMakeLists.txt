@@ -4,15 +4,12 @@ set(CMAKE_CUDA_STANDARD 20)
 set(CMAKE_CUDA_ARCHITECTURES 86)
 
 # # # # # # # # # # # #
-# Static Library for DLL to build off of
-# # # # # # # # # # # #
-add_library(WarpLibDevice_Static STATIC )
-
-
-# # # # # # # # # # # #
 # Shared(DLL) Library
 # # # # # # # # # # # #
-add_library(${WARP_DEVICE_LIB} SHARED CudaKernels.cu device_transformers.cu)
+add_library(${WARP_DEVICE_LIB} SHARED CudaKernels.cu device_transformers_inst.cu)
+
+find_package(CUDAToolkit REQUIRED)
+target_link_libraries(${WARP_DEVICE_LIB} PRIVATE CUDA::cudart)
 
 target_include_directories(${WARP_DEVICE_LIB}
         PUBLIC
@@ -25,8 +22,6 @@ target_compile_definitions(${WARP_DEVICE_LIB} PRIVATE WARP_DEVICE_EXPORTS)
 set_target_properties(${WARP_DEVICE_LIB} PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON
         POSITION_INDEPENDENT_CODE ON
-#        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>
-#        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/$<CONFIG>
 )
 
 target_compile_features(${WARP_DEVICE_LIB} PUBLIC cxx_std_20)

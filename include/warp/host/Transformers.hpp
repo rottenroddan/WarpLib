@@ -15,7 +15,7 @@
 
 #include <warp/device/Common.cuh>
 #include <warp/device/CudaKernels.h>
-#include <warp/device/device_transformers.cuh>
+#include <warp/device/device_transformers.hpp>
 
 namespace warp::transformers {
     /**
