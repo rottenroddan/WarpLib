@@ -16,14 +16,12 @@
 #define WARP_CUDA_DEFAULT_THREAD_COUNT 256
 
 namespace warp::transformers::kernels {
-    // template<typename T, typename U>
-    //  __global__ void _castArrayKernelRestrict(T* __restrict__ dst, const U* __restrict__ src, size_t size);
-    //
-    // template<typename T, typename U>
-    // __global__ void _castArrayKernel(T* dst, const U* src, size_t size);
+    template<typename DstType, typename SrcType>
+    WARP_DEVICE_API void launchCopyCastDataOnCudaKernel(DstType* dst, SrcType* src, size_t size, bool restrictPtrs);
 
-    template<typename T, typename U>
-    WARP_DEVICE_API void launchCopyCastDataOnCudaKernel(T*dst, U*src, size_t size, bool restrictPtrs);
+    template<typename DstType, typename SrcType, typename DstLayout, typename SrcLayout>
+    WARP_DEVICE_API void launchCopyOnCudaKernel(DstType* dst, SrcType* src, size_t rows, size_t cols,
+                                                size_t actualRows, size_t actualCols, size_t tileSize);
 }
 
 #endif //WARPLIB_TRANSFORMERKERNELS_CUH

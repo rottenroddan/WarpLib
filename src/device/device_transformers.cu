@@ -6,8 +6,19 @@
 #include <warp/device/device_transformers_kernels.cuh>
 
 namespace warp::transformers::kernels {
-    template<typename T, typename U>
-    WARP_DEVICE_API void launchCopyCastDataOnCudaKernel(T* const dst, U* const src, const size_t size, const bool restrictPtrs) {
+    template<typename DstType, typename SrcType, typename DstLayout, typename SrcLayout>
+    WARP_DEVICE_API void launchCopyOnCudaKernel(DstType* dst, SrcType* src, const size_t rows, const size_t cols,
+                                                const size_t actualRows, const size_t actualCols, const size_t tileSize) {
+        WARP_CUDA_CHECK_FOR_IMPLICIT_HOST_MEMORY(src);
+        WARP_CUDA_CHECK_FOR_IMPLICIT_HOST_MEMORY(dst);
+
+        _copyMatrixAcrossLayouts<DstType, SrcType, DstLayout, SrcLayout><<<1,1>>>(dst, src, rows, cols, actualRows, actualCols, tileSize);
+        WARP_CUDA_ERROR_CHECK(cudaDeviceSynchronize());
+        WARP_CUDA_ERROR_CHECK(cudaGetLastError());
+    }
+
+    template<typename DstType, typename SrcType>
+    WARP_DEVICE_API void launchCopyCastDataOnCudaKernel(DstType* dst, SrcType* src, const size_t size, const bool restrictPtrs) {
         WARP_CUDA_CHECK_FOR_IMPLICIT_HOST_MEMORY(src);
         WARP_CUDA_CHECK_FOR_IMPLICIT_HOST_MEMORY(dst);
 

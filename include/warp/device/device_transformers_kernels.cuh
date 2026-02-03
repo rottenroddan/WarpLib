@@ -21,6 +21,14 @@ namespace warp::transformers::kernels {
             dst[i] = static_cast<T>(src[i]);
         }
     }
+
+    template<typename DstType, typename SrcType, typename DstLayout, typename SrcLayout>
+    __global__ void _copyMatrixAcrossLayouts(DstType* dst, SrcType* src,
+                                            const size_t rows, const size_t cols,
+                                            const size_t actualRows, const size_t actualCols,
+                                            const size_t tileSize) {
+        auto x = DstLayout::index(0,0, rows, cols, actualRows, actualCols);
+    }
 }
 
 #endif //WARPLIB_DEVICE_TRANSFORMERS_KERNELS_CUH

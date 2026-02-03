@@ -160,3 +160,21 @@ TEST(MatrixTransformerTestSuite, HandlesCopyFromGenericHostToCudaDeviceBackToHos
 
     return validate(truth, test_host);
 }
+
+TEST(MatrixTransformerTestSuite, HandlesCopyFromGenericHostToCudaDeviceBackToHostWithDifferentLayoutSameTypes) {
+    using namespace warp;
+    Matrix<int, mem::resource::CudaPinnedResource, mem::layout::TileRowMajorLayout<16>> truth(ROWS, COLS);
+    Matrix<int, mem::resource::CudaDeviceResource, mem::layout::TileRowMajorLayout<16>> test_device(ROWS, COLS);
+    Matrix<int, mem::resource::CudaPinnedResource> test_host(ROWS, COLS);
+
+    ASSERT_EQ(truth.getRows(), test_device.getRows());
+    ASSERT_EQ(truth.getCols(), test_device.getCols());
+    ASSERT_EQ(truth.getRows(), test_host.getRows());
+    ASSERT_EQ(truth.getCols(), test_host.getCols());
+
+    populateWithMemIndex(truth);
+    truth.copyTo(test_device);
+    test_device.copyTo(test_host);
+
+    return validate(truth, test_host);
+}
