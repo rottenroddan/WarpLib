@@ -3,7 +3,7 @@
 //
 
 #include "OverloadedCopy.hpp"
-#include <warp/host/Matrix.hpp>
+#include <warp/WarpLib.hpp>
 
 int main() {
     using namespace warp;

@@ -6,26 +6,15 @@
 #include <warp/device/device_transformers_kernels.cuh>
 
 namespace warp::transformers::kernels {
-    // template<typename T, typename U>
-    // __global__ void _castArrayKernelRestrict(T* __restrict__ dst, const U* __restrict__ src, const size_t size) {
-    //     for (size_t i = blockDim.x * blockIdx.x + threadIdx.x; i < size; i+= blockDim.x * gridDim.x) {
-    //         dst[i] = static_cast<T>(src[i]);
-    //     }
-    // }
-    //
-    // template<typename T, typename U>
-    // __global__ void _castArrayKernel(T* dst, const U* src, const size_t size) {
-    //     for (size_t i = blockDim.x * blockIdx.x + threadIdx.x; i < size; i+= blockDim.x * gridDim.x) {
-    //         dst[i] = static_cast<T>(src[i]);
-    //     }
-    // }
-
     template<typename T, typename U>
-    WARP_DEVICE_API void launchCastDataOnCudaKernel(T* const dst, U* const src, const size_t size, const bool restrictPtrs) {
+    WARP_DEVICE_API void launchCopyCastDataOnCudaKernel(T* const dst, U* const src, const size_t size, const bool restrictPtrs) {
+        WARP_CUDA_CHECK_FOR_IMPLICIT_HOST_MEMORY(src);
+        WARP_CUDA_CHECK_FOR_IMPLICIT_HOST_MEMORY(dst);
+
         int numOfSms = 0;
         int device;
-        CUDA_CHECK(cudaGetDevice(&device));
-        CUDA_CHECK(cudaDeviceGetAttribute(&numOfSms, cudaDevAttrMultiProcessorCount, device));
+        WARP_CUDA_ERROR_CHECK(cudaGetDevice(&device));
+        WARP_CUDA_ERROR_CHECK(cudaDeviceGetAttribute(&numOfSms, cudaDevAttrMultiProcessorCount, device));
 
         dim3 threadBlock(WARP_CUDA_DEFAULT_THREAD_COUNT);
 
@@ -45,10 +34,7 @@ namespace warp::transformers::kernels {
         else {
             _castArrayKernel<<<grid, threadBlock>>>(dst, src, size);
         }
-        CUDA_CHECK(cudaDeviceSynchronize());
-        CUDA_CHECK(cudaGetLastError());
+        WARP_CUDA_ERROR_CHECK(cudaDeviceSynchronize());
+        WARP_CUDA_ERROR_CHECK(cudaGetLastError());
     }
-
-    //template WARP_DEVICE_API void launchCastDataOnCudaKernel(int*, float*, size_t, bool);
-    //template WARP_DEVICE_API void launchCastDataOnCudaKernel(float*, int*, size_t, bool);
 }

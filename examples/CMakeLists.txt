@@ -4,4 +4,4 @@
 add_subdirectory(test_build_library)
 add_subdirectory(another_directory)
 add_subdirectory(PrintTiledIndices)
-add_subdirectory(OverloadCopyForMatricesExample)
+#add_subdirectory(OverloadCopyForMatricesExample)

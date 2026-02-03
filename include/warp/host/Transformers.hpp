@@ -7,6 +7,7 @@
 
 #include <cassert>
 #include <warp/host/common.hpp>
+#include <warp/host/Transformers_fwd.hpp>
 
 #include <warp/shared/detail.hpp>
 #include <warp/shared/layout/TileRowMajorLayout.hpp>
@@ -94,6 +95,10 @@ namespace warp::transformers {
         }
     }
 
+    /* * * * * * * * * * * * * * *
+     * CUDA DEVICE TO HOST
+     * * * * * * * * * * * * * * */
+
     template<typename DstMatrix, typename SrcMatrix>
     requires
         std::is_same_v<typename DstMatrix::value_type, typename SrcMatrix::value_type> &&
@@ -103,6 +108,38 @@ namespace warp::transformers {
         assert((common::isExactSameDimensions<DstMatrix, SrcMatrix>(dst, src)));
         cudaMemcpy(dst.getRaw(), src.getRaw(), dst.getActualTotalSize() * sizeof(DstMatrix::value_type), cudaMemcpyDeviceToHost);
     }
+
+    template<typename DstMatrix, typename SrcMatrix>
+    requires
+        (!std::is_same_v<typename DstMatrix::value_type, typename SrcMatrix::value_type>) &&
+        std::is_same_v<typename DstMatrix::layout_type, typename SrcMatrix::layout_type> &&
+        DstMatrix::resource_type::cpu_accessible && (!SrcMatrix::resource_type::cpu_accessible) // device->host
+    void copy(DstMatrix& dst, const SrcMatrix& src, detail::internal::priority_1) {
+        assert((common::isExactSameDimensions<DstMatrix, SrcMatrix>(dst, src)));
+        bool isNotSameMemoryRegion = static_cast<void*>(dst.getRaw()) != static_cast<void*>(src.getRaw());
+
+        auto* tempDst = SrcMatrix::resource_type::template allocate<typename DstMatrix::value_type>(src.getActualTotalSize());
+        kernels::launchCopyCastDataOnCudaKernel(tempDst, src.getRaw(), dst.getActualTotalSize(), isNotSameMemoryRegion);
+        cudaMemcpy(dst.getRaw(), tempDst, dst.getActualTotalSize() * sizeof(DstMatrix::value_type), cudaMemcpyDeviceToHost);
+    }
+
+    template<typename DstMatrix, typename SrcMatrix>
+    requires
+        (!std::is_same_v<typename DstMatrix::value_type, typename SrcMatrix::value_type>) &&
+        (!std::is_same_v<typename DstMatrix::layout_type, typename SrcMatrix::layout_type>) &&
+        DstMatrix::resource_type::cpu_accessible && (!SrcMatrix::resource_type::cpu_accessible) // device->host
+    void copy(DstMatrix& dst, const SrcMatrix& src, detail::internal::priority_1) {
+        assert((common::isExactSameDimensions<DstMatrix, SrcMatrix>(dst, src)));
+        bool isNotSameMemoryRegion = static_cast<void*>(dst.getRaw()) != static_cast<void*>(src.getRaw());
+
+        auto* tempDst = SrcMatrix::resource_type::template allocate<typename DstMatrix::value_type>(src.getActualTotalSize());
+        kernels::launchCopyCastDataOnCudaKernel(tempDst, src.getRaw(), dst.getActualTotalSize(), isNotSameMemoryRegion);
+        cudaMemcpy(dst.getRaw(), tempDst, dst.getActualTotalSize() * sizeof(DstMatrix::value_type), cudaMemcpyDeviceToHost);
+    }
+
+    /* * * * * * * * * * * * * * *
+     * HOST TO CUDA DEVICE
+     * * * * * * * * * * * * * * */
 
     template<typename DstMatrix, typename SrcMatrix>
     requires
@@ -122,17 +159,6 @@ namespace warp::transformers {
     void copy(DstMatrix& dst, const SrcMatrix& src, detail::internal::priority_1) {
         assert((common::isExactSameDimensions<DstMatrix, SrcMatrix>(dst, src)));
         cudaMemcpy(dst.getRaw(), src.getRaw(), dst.getActualTotalSize() * sizeof(DstMatrix::value_type), cudaMemcpyDeviceToDevice);
-    }
-
-    template<typename DstMatrix, typename SrcMatrix>
-    requires
-        (!std::is_same_v<typename DstMatrix::value_type, typename SrcMatrix::value_type>) &&
-        std::is_same_v<typename DstMatrix::layout_type, typename SrcMatrix::layout_type> &&
-        DstMatrix::resource_type::cpu_accessible && (!SrcMatrix::resource_type::cpu_accessible) // device->host
-    void copy(DstMatrix& dst, const SrcMatrix& src, detail::internal::priority_1) {
-        assert((common::isExactSameDimensions<DstMatrix, SrcMatrix>(dst, src)));
-        bool isNotSameMemoryRegion = (static_cast<void*>(dst.getRaw()) != static_cast<void*>(src.getRaw()));
-        kernels::launchCastDataOnCudaKernel(dst.getRaw(), src.getRaw(), dst.getActualTotalSize(), isNotSameMemoryRegion);
     }
 }
 

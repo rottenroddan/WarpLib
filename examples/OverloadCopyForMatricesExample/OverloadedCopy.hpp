@@ -5,8 +5,7 @@
 #ifndef WARPLIB_OVERLOADEDCOPY_HPP
 #define WARPLIB_OVERLOADEDCOPY_HPP
 
-#include <warp/shared/detail.hpp>
-#include <warp/shared/layout/MemoryLayout.hpp>
+#include <warp/WarpLib.hpp>
 #include <concepts>
 #include <iostream>
 

@@ -22,21 +22,15 @@ namespace warp::mem::resource {
             memset(_dst, T{0}, size * sizeof(T));
         }
 
-#ifndef WARPLIB_ZERO_MEMORY
-        template<class T>
-        static void deallocate(T* const _ptr) {
-            delete[] _ptr;
-        }
-#else
         template<class T>
         static void deallocate(T* const _ptr, const size_t size) {
 #ifdef WIN32
+#ifdef WARPLIB_ZERO_MEMORY
             SecureZeroMemory(_ptr, size * sizeof(T));
+#endif
 #endif
             delete[] _ptr;
         }
-#endif
-
     };
 }
 

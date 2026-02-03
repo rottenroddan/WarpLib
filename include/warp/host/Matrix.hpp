@@ -5,18 +5,17 @@
 #ifndef WARPLIB_MATRIX_HPP
 #define WARPLIB_MATRIX_HPP
 
-
 #include <concepts>
 #include <memory>
 #include <type_traits>
 
 #include <warp/host/policies.hpp>
 #include <warp/host/resources/GenericHostResource.hpp>
+#include <warp/shared/detail.hpp>
 #include <warp/shared/layout/MemoryLayout.hpp>
 #include <warp/shared/layout/RowMajorLayout.hpp>
 
 #include "Transformers.hpp"
-
 
 namespace warp  {
     /**
@@ -47,11 +46,7 @@ namespace warp  {
             auto* _raw = Resource::template allocate<T>(actualTotalSize);
             Resource::template zero<T>(_raw, actualTotalSize);
             _matrix = std::shared_ptr<T[]>(_raw, [this](T* _ptr) {
-#ifndef WARPLIB_ZERO_MEMORY
-                Resource::template deallocate<T>(_ptr);
-#else
                 Resource::template deallocate<T>(_ptr, actualTotalSize);
-#endif
             });
         }
 
@@ -98,5 +93,6 @@ namespace warp  {
         }
     };
 }
+
 
 #endif //WARPLIB_MATRIX_HPP

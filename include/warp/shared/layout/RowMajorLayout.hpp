@@ -2,8 +2,8 @@
 // Created by Steven Roddan on 12/29/2025.
 //
 
-#ifndef WARPLIB_GENEREICROWMAJORLAYOUT_HPP
-#define WARPLIB_GENEREICROWMAJORLAYOUT_HPP
+#ifndef WARPLIB_ROWMAJORLAYOUT_HPP
+#define WARPLIB_ROWMAJORLAYOUT_HPP
 
 #include <warp/shared/cuda_attr_expandables.hpp>
 #include <warp/shared/layout/MemoryLayout.hpp>

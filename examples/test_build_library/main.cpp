@@ -2,14 +2,7 @@
 // Created by Steven Roddan on 12/21/2025.
 //
 
-#include <warp/host/test.h>
-#include <warp/device/CudaKernels.h>
-
-#include <warp/host/Matrix.hpp>
-#include <warp/host/resources/CudaDeviceResource.hpp>
-
-#include "warp/host/resources/CudaManagedResource.hpp"
-#include "warp/shared/layout/GenericLayout.hpp"
+#include <warp/WarpLib.hpp>
 
 template<class T>
 class A;

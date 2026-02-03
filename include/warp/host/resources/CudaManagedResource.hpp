@@ -14,7 +14,7 @@ namespace warp::mem::resource {
 
         template<class T>
         static T* allocate(const size_t size) {
-            T* _ptr = nullptr;
+            T* _ptr;
             cudaMallocManaged(&_ptr, size * sizeof(T));
             return _ptr;
         }
@@ -24,19 +24,13 @@ namespace warp::mem::resource {
             cudaMemset(_dst, 0x0, size * sizeof(T));
         }
 
-#ifndef WARPLIB_ZERO_MEMORY
-        template<class T>
-        static void deallocate(T* const _ptr) {
-            cudaFree(static_cast<void *>(_ptr));
-        }
-
-#else
         template<class T>
         static void deallocate(T* const _ptr, const size_t size) {
+#ifdef WARPLIB_ZERO_MEMORY
             cudaMemset(static_cast<void *>(_ptr), 0x0, size * sizeof(T));
+#endif
             cudaFree(static_cast<void *>(_ptr));
         }
-#endif
     };
 }
 

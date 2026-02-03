@@ -2,12 +2,7 @@
 // Created by Steven Roddan on 1/25/2026.
 //
 
-#include <warp/host/Matrix.hpp>
-#include <warp/host/resources/GenericHostResource.hpp>
-#include <warp/host/resources/HostCacheAlignedResource.hpp>
-#include <warp/host/resources/CudaManagedResource.hpp>
-#include <warp/host/resources/CudaPinnedResource.hpp>
-
+#include <warp/WarpLib.hpp>
 #include <gtest/gtest.h>
 
 size_t COLS = 512;
@@ -17,8 +12,10 @@ template<typename T, typename U>
 static void validate(T truth, U test) {
     for (size_t i = 0; i < truth.getRows(); i++) {
         for (size_t j = 0; j < truth.getCols(); j++) {
+            //std::cout << truth.get(i,j) << " vs " << test.get(i,j) << " ";
             ASSERT_EQ(truth.get(i,j), test.get(i,j)) << "Failed at: i:" << i << " j:" << j;
         }
+        //std::cout << std::endl;
     }
 }
 
@@ -160,5 +157,6 @@ TEST(MatrixTransformerTestSuite, HandlesCopyFromGenericHostToCudaDeviceBackToHos
     populateWithMemIndex(truth);
     truth.copyTo(test_device);
     test_device.copyTo(test_host);
+
     return validate(truth, test_host);
 }

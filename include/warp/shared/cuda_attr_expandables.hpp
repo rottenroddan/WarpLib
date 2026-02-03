@@ -2,7 +2,8 @@
 // Created by Steven Roddan on 1/9/2026.
 //
 
-#pragma once
+#ifndef WARPLIB_CUDA_ATTR_EXPANDABLES_HPP
+#define WARPLIB_CUDA_ATTR_EXPANDABLES_HPP
 
 #if defined(__CUDACC__)
     #define HOST_DEVICE __host__ __device__
@@ -12,4 +13,7 @@
     #define HOST_DEVICE
     #define HOST
     #define DEVICE
+#endif
+
+
 #endif

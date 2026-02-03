@@ -23,18 +23,14 @@ namespace warp::mem::resource {
             cudaMemset(_dst, 0x0, size * sizeof(T));
         }
 
-#ifndef WARPLIB_ZERO_MEMORY
-        template<class T>
-        static void deallocate(T* const _ptr) {
-            cudaFreeHost(static_cast<void *>(_ptr));
-        }
-#else
+
         template<class T>
         static void deallocate(T* const _ptr, const size_t size) {
+#ifdef WARPLIB_ZERO_MEMORY
             cudaMemset(static_cast<void *>(_ptr), 0x0, size * sizeof(T));
+#endif
             cudaFreeHost(static_cast<void *>(_ptr));
         }
-#endif
     };
 }
 

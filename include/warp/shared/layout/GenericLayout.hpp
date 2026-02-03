@@ -4,6 +4,8 @@
 
 #ifndef WARPLIB_GENERICLAYOUT_HPP
 #define WARPLIB_GENERICLAYOUT_HPP
+
+#include <warp/shared/layout/MemoryLayout.hpp>
 #include <warp/shared/cuda_attr_expandables.hpp>
 
 namespace warp::mem::layout {

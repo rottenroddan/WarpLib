@@ -23,7 +23,7 @@ namespace warp::transformers::kernels {
     // __global__ void _castArrayKernel(T* dst, const U* src, size_t size);
 
     template<typename T, typename U>
-    WARP_DEVICE_API void launchCastDataOnCudaKernel(T*dst, U*src, size_t size, bool restrictPtrs);
+    WARP_DEVICE_API void launchCopyCastDataOnCudaKernel(T*dst, U*src, size_t size, bool restrictPtrs);
 }
 
 #endif //WARPLIB_TRANSFORMERKERNELS_CUH

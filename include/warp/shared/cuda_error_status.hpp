@@ -5,7 +5,7 @@
 #ifndef WARPLIB_CUDA_ERROR_STATUS_HPP
 #define WARPLIB_CUDA_ERROR_STATUS_HPP
 
-#define CUDA_CHECK(call)                                \
+#define WARP_CUDA_ERROR_CHECK(call)                     \
     do {                                                \
         cudaError_t err = (call);                       \
         if (err != cudaSuccess) {                       \
@@ -16,5 +16,17 @@
             abort();                                    \
         }                                               \
     } while (0)
+
+#define WARP_CUDA_CHECK_FOR_IMPLICIT_HOST_MEMORY(_ptr)                  \
+    do { cudaPointerAttributes attr{};                                  \
+        cudaError_t err = cudaPointerGetAttributes(&attr, _ptr);        \
+        if (err != cudaSuccess ||                                       \
+            (attr.type != cudaMemoryTypeDevice &&                       \
+             attr.type != cudaMemoryTypeManaged)) {                     \
+            std::cerr << "Pointer must be device or managed memory\n";  \
+            std::abort();                                               \
+        }                                                               \
+    } while (0);
+
 
 #endif //WARPLIB_CUDA_ERROR_STATUS_HPP

@@ -2,9 +2,7 @@
 // Created by Steven Roddan on 1/21/2026.
 //
 
-#include <warp/shared/layout/TileRowMajorLayout.hpp>
-#include <warp/shared/layout/TileColMajorLayout.hpp>
-#include <warp/host/Matrix.hpp>
+#include <warp/WarpLib.hpp>
 
 #include <iomanip>
 #include <iostream>
